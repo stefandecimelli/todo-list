@@ -2,6 +2,7 @@ package com.decimelli.todo.service;
 
 import java.util.List;
 
+import com.decimelli.todo.model.ErrorResponse;
 import com.decimelli.todo.model.TodoItem;
 
 import jakarta.enterprise.context.ApplicationScoped;
@@ -27,11 +28,16 @@ public class TodoItemService {
 	@POST
 	@Transactional
 	public Response createItem(TodoItem item) {
+		if (item.getName() == null) {
+			return Response.notAcceptable(null)
+					.entity(new ErrorResponse("Missing 'name' field.")).build();
+		}
 		try {
 			database.persist(item);
 			return Response.accepted().build();
 		} catch (RuntimeException e) {
-			return Response.serverError().entity(e).build();
+			return Response.serverError()
+					.entity(new ErrorResponse(e.getLocalizedMessage())).build();
 		}
 	}
 
