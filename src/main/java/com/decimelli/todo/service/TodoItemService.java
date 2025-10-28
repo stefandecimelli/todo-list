@@ -54,7 +54,12 @@ public class TodoItemService {
 	public void updateItem(@PathParam("id") Long id, TodoItem item) {
 		TodoItem toUpdate = database.find(TodoItem.class, id);
 		if (toUpdate != null) {
-			toUpdate.setName(item.getName());
+			if (item.getName() != null) {
+				toUpdate.setName(item.getName());
+			}
+			if (item.getDueDate() != null) {
+				toUpdate.setDueDate(item.getDueDate());
+			}
 		}
 	}
 
