@@ -15,6 +15,7 @@ import jakarta.ws.rs.POST;
 import jakarta.ws.rs.PUT;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.core.Response;
 
 @Path("/items")
 @ApplicationScoped
@@ -25,8 +26,13 @@ public class TodoItemService {
 
 	@POST
 	@Transactional
-	public void createItem(TodoItem item) {
-		database.persist(item);
+	public Response createItem(TodoItem item) {
+		try {
+			database.persist(item);
+			return Response.accepted().build();
+		} catch (RuntimeException e) {
+			return Response.serverError().entity(e).build();
+		}
 	}
 
 	@GET
